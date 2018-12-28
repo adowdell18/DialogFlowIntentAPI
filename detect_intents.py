@@ -14,11 +14,7 @@ import requests
 
 
 
-
-#flask app should start in global layout
-
 app = Flask(__name__)
-#@app.route('/webhook', methods = ['POST'])
 @app.route('/testing', methods = ['GET', 'POST'])
 
 
@@ -27,28 +23,18 @@ def webhook():
     print("Request: ")
     print(json.dumps(req, indent=4))
 
-    #res = makeWebHookResult(req)
 
     res = json.dumps(req, indent=4)
-    #print(res)
     r = make_response(res)
-    #r.headers['Content-Type'] = 'application/json'
 
-    ### Allows us to write data to file and then use it
-    #print(getUtterance(req))
-    #print(getActualClassification(req))
-    #print(getExpectedClassification())
-    #line = getUtterance(req) + getActualClassification(req) + getExpectedClassification()
     writeLine.append(getUtterance(req))
     writeLine.append(getActualClassification(req))
     writeLine.append(getExpectedClassification(req))
     writeLine.append("\n")
-    #writeLine.append("\n")
 
     with open('o1.csv', 'w', newline='\n') as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
         writer.writerow(writeLine)
-        #1print(writeLine)
             
     with open ('dataJSON.js', 'w') as outfile:
         json.dump(req, outfile)
@@ -62,7 +48,6 @@ def webhook():
         print("row 1: ",row[1])
         if (str(row[0]) == getUtterance(req)):
             print(row[0])
-            #ec = row[1]
             
     print("finished")
         
@@ -77,12 +62,10 @@ def getActualClassification(req):
     acInt = int(acLst[1])
     return acInt
 def getExpectedClassification(req):
-    #ec = -100
     f = open('Johnson_80-20.csv')
     csv_f = csv.reader(f)
     for row in csv_f:
         if str(row[0]) == getUtterance(req):
-            #print(row[0])
             ec = row[1]
             return ec
     return -99999
@@ -133,7 +116,6 @@ def send_message():
         
         
         with open('o1.csv', 'a') as csvfile:
-            #writeStr = ",".writeLine
             writer = csv.writer(csvfile, delimiter=',')
             writer.writerow(writeLine)
         csvfile.close()
